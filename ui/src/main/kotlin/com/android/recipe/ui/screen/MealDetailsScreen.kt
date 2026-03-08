@@ -368,6 +368,9 @@ private fun String.toInstructionSteps(): List<String> {
         .split("\n")
         .map { it.trim() }
         .filter { it.isNotEmpty() }
+        .filterNot { step ->
+            step.matches(Regex("^step\\s*\\d+$", RegexOption.IGNORE_CASE))
+        }
 }
 
 /**
