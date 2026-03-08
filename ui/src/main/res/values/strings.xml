@@ -13,4 +13,7 @@
     <string name="error_client">Something went wrong with the request.</string>
     <string name="error_server">Server error. Please try again later.</string>
     <string name="error_unknown">Something went wrong.</string>
+    <string name="watch_video">WATCH VIDEO</string>
+    <string name="meal_ingredients_title">Ingredients</string>
+    <string name="meal_instructions_title">Instructions</string>
 </resources>

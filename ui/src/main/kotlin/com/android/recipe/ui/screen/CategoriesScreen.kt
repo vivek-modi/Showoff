@@ -41,7 +41,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.android.recipe.ui.R
@@ -50,6 +49,7 @@ import com.android.recipe.ui.components.LoadingOverlay
 import com.android.recipe.ui.components.RetryView
 import com.android.recipe.ui.event.CategoriesUiEvent
 import com.android.recipe.ui.state.CategoriesUiState
+import com.android.recipe.ui.theme.elevation
 import com.android.recipe.ui.theme.spacing
 import com.android.recipe.ui.utils.ObserveAsEvent
 import com.android.recipe.ui.utils.staggeredEntrance
@@ -195,7 +195,7 @@ private fun CategoryGridItem(
             .fillMaxWidth()
             .aspectRatio(0.82f),
         shape = MaterialTheme.shapes.extraLarge,
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = MaterialTheme.elevation.medium),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
