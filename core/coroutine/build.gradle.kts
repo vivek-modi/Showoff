@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.showoff.coroutine"
+    namespace = "com.android.recipe.coroutine"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt()) {
             minorApiLevel = 1

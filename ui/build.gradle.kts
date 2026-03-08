@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.showoff.ui"
+    namespace = "com.android.recipe.ui"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

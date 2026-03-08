@@ -22,7 +22,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Showoff"
+rootProject.name = "Recipe"
 include(":app")
 include(":domain")
 include(":ui")

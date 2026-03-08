@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.showoff.network"
+    namespace = "com.android.recipe.network"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt()) {
             minorApiLevel = 1

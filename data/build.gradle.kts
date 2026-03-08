@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 android {
-    namespace = "com.android.showoff.data"
+    namespace = "com.android.recipe.data"
     compileSdk = libs.versions.compileSdk.get().toInt()
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()

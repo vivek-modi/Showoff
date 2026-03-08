@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.showoff.domain"
+    namespace = "com.android.recipe.domain"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

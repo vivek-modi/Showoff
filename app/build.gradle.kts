@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.showoff"
+    namespace = "com.android.recipe"
     compileSdk {
         version = release(libs.versions.compileSdk.get().toInt()) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.android.showoff"
+        applicationId = "com.android.recipe"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
