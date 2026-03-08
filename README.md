@@ -29,14 +29,14 @@ The app is modularized to keep things tidy. Here is how they talk to each other:
 *   **`:ui`** and **`:data`** both depend on **`:domain`**.
 *   **`:app`** brings everyone together to make the app run.
 
-## Project Structure & Where to Code
-If you are wondering which module you need to touch:
+## Performance & Optimization
+*   **R8 & Minification**: The release build has R8 enabled (`isMinifyEnabled = true`) with resource shrinking (`isShrinkResources = true`). This reduces the APK size and obfuscates the code for better security and performance.
+*   **Koin Lazy Initialization**: We leverage Koin's lazy loading capabilities. Components are only created when they are actually needed, which significantly improves app startup time and reduces initial memory footprint.
 
-*   **`:ui`**: Go here if you want to add a new screen, change a button, or update how data is shown.
-*   **`:domain`**: Go here to define new data models or "Use Cases" (the rules of your app).
-*   **`:data`**: Go here if you're adding a new API call or changing how we save data.
-*   **`:core`**: Small utility modules for Networking and Coroutines that don't change often.
-*   **`:app`**: Only touch this for app-wide settings like themes or dependency injection setup.
+## Testing Strategy
+We maintain high code quality through a rigorous testing approach:
+*   **Unit Tests**: We have extensive coverage for ViewModels, Use Cases, and Mappers to ensure business logic remains robust as the project grows.
+*   **Automated Execution**: Tests are configured to run efficiently on the modern test platform, ensuring reliable results during development.
 
 ## Tech We Used
 *   **Kotlin**: Our main programming language.
