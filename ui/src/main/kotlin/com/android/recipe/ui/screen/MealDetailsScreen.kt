@@ -66,7 +66,7 @@ import com.android.recipe.ui.utils.staggeredEntrance
 import com.android.recipe.ui.viewmodel.MealDetailsViewModel
 
 private const val HeroHeightFactor = 0.42f
-private const val GradientHeightFactor = 0.35f
+private const val GradientHeightFactor = 0.3f
 private const val ActionButtonWidthFactor = 0.85f
 
 /**
@@ -198,7 +198,7 @@ private fun MealDetailsContent(
 }
 
 /**
- * Displays the hero section with the meal image and a gradient overlay.
+ * Displays the hero image and a top gradient overlay.
  */
 @Composable
 private fun MealHeroSection(
@@ -234,7 +234,7 @@ private fun MealHeroSection(
 }
 
 /**
- * Displays the header portion of the meal details, including the sheet handle and title info.
+ * Displays the header information of the meal, including name, category, and origin.
  */
 @Composable
 private fun MealDetailsHeader(details: RecipeDetails) {
@@ -294,16 +294,23 @@ private fun MealDetailsHeader(details: RecipeDetails) {
 
 /**
  * Displays the step-by-step cooking directions for the recipe.
+ *
+ * @param instructions The raw instruction text to be converted into steps.
+ * @param ingredientsCount Used to offset the staggered animation delay.
  */
 @Composable
-private fun MealInstructionsSection(instructions: String, ingredientsCount: Int) {
+private fun MealInstructionsSection(
+    instructions: String,
+    ingredientsCount: Int,
+) {
+    val steps = remember(instructions) { instructions.toInstructionSteps() }
+
     Surface(
         modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
     ) {
         Column(
-            modifier = Modifier
-                .padding(MaterialTheme.spacing.large),
+            modifier = Modifier.padding(MaterialTheme.spacing.large),
         ) {
             Text(
                 text = stringResource(R.string.meal_instructions_title),
@@ -311,15 +318,56 @@ private fun MealInstructionsSection(instructions: String, ingredientsCount: Int)
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.staggeredEntrance(index = 4 + ingredientsCount),
             )
+
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            Text(
-                text = instructions,
-                style = MaterialTheme.typography.bodyMedium,
-                lineHeight = 24.sp,
-                modifier = Modifier.staggeredEntrance(index = 5 + ingredientsCount),
-            )
+
+            steps.forEachIndexed { index, step ->
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = MaterialTheme.spacing.medium)
+                        .staggeredEntrance(index = 5 + ingredientsCount + index),
+                    verticalAlignment = Alignment.Top,
+                ) {
+
+                    Surface(
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        modifier = Modifier.size(MaterialTheme.spacing.extraLarge),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text(
+                                text = (index + 1).toString(),
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+
+                    Text(
+                        text = step,
+                        style = MaterialTheme.typography.bodyMedium,
+                        lineHeight = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+            }
         }
     }
+}
+
+/**
+ * Normalizes and splits instruction text into individual préparatory steps.
+ */
+private fun String.toInstructionSteps(): List<String> {
+    return replace("\r", "")
+        .replace("▢", "\n")
+        .split("\n")
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
 }
 
 /**
