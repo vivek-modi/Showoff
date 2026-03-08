@@ -29,7 +29,13 @@ fun JsonObject.toDomain(): RecipeDetails {
     val details = mapperJson.decodeFromJsonElement<MealDetailsResponseItem>(this)
 
     val ingredients = extractIngredients()
-        .map { IngredientItem(it.name, it.measure) }
+        .map {
+            IngredientItem(
+                name = it.name,
+                measure = it.measure,
+                imageUrl = "https://www.themealdb.com/images/ingredients/${it.name.trim()}.png",
+            )
+        }
 
     return RecipeDetails(
         id = details.id,

@@ -35,6 +35,10 @@ class MealDetailsMapperTest {
         assertEquals(1, result.ingredients.size)
         assertEquals("Chicken", result.ingredients[0].name)
         assertEquals("500g", result.ingredients[0].measure)
+        assertEquals(
+            "https://www.themealdb.com/images/ingredients/Chicken.png",
+            result.ingredients[0].imageUrl,
+        )
     }
 
     @Test

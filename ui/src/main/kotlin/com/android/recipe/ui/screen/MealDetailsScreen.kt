@@ -32,7 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,7 +66,7 @@ import com.android.recipe.ui.utils.staggeredEntrance
 import com.android.recipe.ui.viewmodel.MealDetailsViewModel
 
 private const val HeroHeightFactor = 0.42f
-private const val GradientHeightFactor = 0.3f
+private const val GradientHeightFactor = 0.35f
 private const val ActionButtonWidthFactor = 0.85f
 
 /**
@@ -196,7 +198,7 @@ private fun MealDetailsContent(
 }
 
 /**
- * Displays the hero image and a top gradient overlay.
+ * Displays the hero section with the meal image and a gradient overlay.
  */
 @Composable
 private fun MealHeroSection(
@@ -232,7 +234,7 @@ private fun MealHeroSection(
 }
 
 /**
- * Displays the header information of the meal, including name, category, and origin.
+ * Displays the header portion of the meal details, including the sheet handle and title info.
  */
 @Composable
 private fun MealDetailsHeader(details: RecipeDetails) {
@@ -291,7 +293,7 @@ private fun MealDetailsHeader(details: RecipeDetails) {
 }
 
 /**
- * Displays the instructions for preparing the meal.
+ * Displays the step-by-step cooking directions for the recipe.
  */
 @Composable
 private fun MealInstructionsSection(instructions: String, ingredientsCount: Int) {
@@ -321,7 +323,7 @@ private fun MealInstructionsSection(instructions: String, ingredientsCount: Int)
 }
 
 /**
- * A floating back button used for navigation.
+ * A circular back button that floats over the hero image.
  */
 @Composable
 private fun BoxScope.MealFloatingBackButton(onBackPressed: () -> Unit) {
@@ -348,7 +350,7 @@ private fun BoxScope.MealFloatingBackButton(onBackPressed: () -> Unit) {
 }
 
 /**
- * A floating button that triggers a video tutorial.
+ * A prominent floating button to trigger the video tutorial.
  */
 @Composable
 private fun MealWatchVideoButton(
@@ -381,13 +383,15 @@ private fun MealWatchVideoButton(
 }
 
 /**
- * A styled row for displaying an ingredient and its measurement in a card-like surface.
+ * Displays a single ingredient card with its name, measurement, and a leading badge.
  */
 @Composable
 private fun IngredientItemRow(
     ingredient: IngredientItem,
     modifier: Modifier = Modifier,
 ) {
+    var isImageError by remember { mutableStateOf(false) }
+
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
@@ -407,12 +411,23 @@ private fun IngredientItemRow(
                 modifier = Modifier.size(MaterialTheme.size.small * 5),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = ingredient.name.take(1).uppercase(),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.primary,
-                        fontWeight = FontWeight.ExtraBold,
-                    )
+                    val imageUrl = ingredient.imageUrl
+                    if (imageUrl != null && !isImageError) {
+                        AsyncImage(
+                            model = imageUrl,
+                            contentDescription = ingredient.name,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                            onError = { isImageError = true },
+                        )
+                    } else {
+                        Text(
+                            text = ingredient.name.take(1).uppercase(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.ExtraBold,
+                        )
+                    }
                 }
             }
 
