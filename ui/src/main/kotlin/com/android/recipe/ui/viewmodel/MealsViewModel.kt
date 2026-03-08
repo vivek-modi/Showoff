@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.recipe.domain.result.AppResult
 import com.android.recipe.domain.usecase.GetMealsByCategoryUseCase
-import com.android.recipe.ui.error.toUiMessage
+import com.android.recipe.ui.error.toUiMessageRes
 import com.android.recipe.ui.event.MealsUiEvent
 import com.android.recipe.ui.state.MealsUiState
 import kotlinx.collections.immutable.toPersistentList
@@ -53,7 +53,7 @@ class MealsViewModel(
                 }
 
                 is AppResult.Error -> {
-                    emit(initialState.copy(error = result.error.toUiMessage()))
+                    emit(initialState.copy(error = result.error.toUiMessageRes()))
                 }
             }
 

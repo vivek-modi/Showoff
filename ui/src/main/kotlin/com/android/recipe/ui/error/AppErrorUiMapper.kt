@@ -1,22 +1,28 @@
 package com.android.recipe.ui.error
 
+import androidx.annotation.StringRes
 import com.android.recipe.domain.result.AppError
+import com.android.recipe.ui.R
 
 /**
- * Converts a domain-level [AppError] into a user-friendly message
- * suitable for display in the UI.
+ * Maps a domain-level [AppError] to a UI string resource.
  *
- * The presentation layer owns these messages to keep the domain and
- * data layers independent of UI wording and localization concerns.
+ * The presentation layer owns the mapping between domain errors and
+ * user-facing messages. Returning a string resource instead of a raw
+ * string allows proper localization and keeps the domain and data
+ * layers independent from UI text.
+ *
+ * @return Android string resource id representing the user-friendly message.
  */
-fun AppError.toUiMessage(): String {
+@StringRes
+fun AppError.toUiMessageRes(): Int {
     return when (this) {
-        AppError.NoInternet -> "No internet connection."
-        AppError.Timeout -> "Request timed out. Please try again."
-        AppError.Serialization -> "Something went wrong while reading the response."
-        AppError.NotFound -> "Recipe not found."
-        is AppError.Client -> "Something went wrong with the request."
-        is AppError.Server -> "Server error. Please try again later."
-        is AppError.Unknown -> "Something went wrong."
+        AppError.NoInternet -> R.string.error_no_internet
+        AppError.Timeout -> R.string.error_timeout
+        AppError.Serialization -> R.string.error_serialization
+        AppError.NotFound -> R.string.error_recipe_not_found
+        is AppError.Client -> R.string.error_client
+        is AppError.Server -> R.string.error_server
+        is AppError.Unknown -> R.string.error_unknown
     }
 }

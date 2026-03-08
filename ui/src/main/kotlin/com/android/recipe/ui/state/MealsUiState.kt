@@ -19,5 +19,5 @@ data class MealsUiState(
     val isLoading: Boolean = true,
     val title: String,
     val meals: PersistentList<RecipeSummary> = persistentListOf(),
-    val error: String? = null,
+    val error: Int? = null,
 )

@@ -73,7 +73,7 @@ fun MealsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
-    val errorMessage = uiState.error?.takeIf { it.isNotEmpty() } ?: stringResource(R.string.error)
+    val errorMessage = uiState.error?.let { stringResource(it) } ?: stringResource(R.string.error)
 
     LaunchedEffect(uiState.error) {
         if (uiState.error != null) {

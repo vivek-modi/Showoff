@@ -6,4 +6,11 @@
     <string name="retry_label">Retry</string>
     <string name="error">Error happened</string>
     <string name="error_generic_retry">An error occurred. Please try again if you wish.</string>
+    <string name="error_no_internet">No internet connection.</string>
+    <string name="error_timeout">Request timed out. Please try again.</string>
+    <string name="error_serialization">Something went wrong while reading the response.</string>
+    <string name="error_recipe_not_found">Recipe not found.</string>
+    <string name="error_client">Something went wrong with the request.</string>
+    <string name="error_server">Server error. Please try again later.</string>
+    <string name="error_unknown">Something went wrong.</string>
 </resources>

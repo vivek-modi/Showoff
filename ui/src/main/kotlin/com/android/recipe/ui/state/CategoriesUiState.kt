@@ -16,5 +16,5 @@ import kotlinx.collections.immutable.persistentListOf
 data class CategoriesUiState(
     val isLoading: Boolean = false,
     val categories: PersistentList<RecipeCategory> = persistentListOf(),
-    val error: String? = null,
+    val error: Int? = null,
 )

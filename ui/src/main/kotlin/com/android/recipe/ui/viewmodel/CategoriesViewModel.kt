@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.recipe.domain.result.AppResult
 import com.android.recipe.domain.usecase.GetCategoriesUseCase
-import com.android.recipe.ui.error.toUiMessage
+import com.android.recipe.ui.error.toUiMessageRes
 import com.android.recipe.ui.event.CategoriesUiEvent
 import com.android.recipe.ui.state.CategoriesUiState
 import kotlinx.collections.immutable.toPersistentList
@@ -42,7 +42,7 @@ class CategoriesViewModel(
                     }
 
                     is AppResult.Error -> {
-                        emit(initialState.copy(error = result.error.toUiMessage()))
+                        emit(initialState.copy(error = result.error.toUiMessageRes()))
                     }
                 }
 
