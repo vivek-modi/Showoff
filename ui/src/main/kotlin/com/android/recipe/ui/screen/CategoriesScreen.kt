@@ -1,5 +1,8 @@
 package com.android.recipe.ui.screen
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -48,6 +52,7 @@ import com.android.recipe.ui.event.CategoriesUiEvent
 import com.android.recipe.ui.state.CategoriesUiState
 import com.android.recipe.ui.theme.spacing
 import com.android.recipe.ui.utils.ObserveAsEvent
+import com.android.recipe.ui.utils.staggeredEntrance
 import com.android.recipe.ui.viewmodel.CategoriesViewModel
 
 /**
@@ -138,13 +143,22 @@ private fun CategoriesScreenContent(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
                 ) {
-                    items(
+                    itemsIndexed(
                         items = uiState.categories,
-                        key = { it.id },
-                    ) { category ->
+                        key = { _, category -> category.id },
+                    ) { index, category ->
                         CategoryGridItem(
                             title = category.name,
                             imageUrl = category.imageUrl,
+                            modifier = Modifier
+                                .staggeredEntrance(index = index)
+                                .animateItem(
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessLow,
+                                        visibilityThreshold = IntOffset.VisibilityThreshold,
+                                    )
+                                ),
                             onClick = {
                                 onAction(CategoriesUiEvent.OnCategoryClicked(category.name))
                             },

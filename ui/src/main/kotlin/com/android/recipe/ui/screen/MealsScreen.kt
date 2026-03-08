@@ -1,6 +1,9 @@
 package com.android.recipe.ui.screen
 
-import androidx.compose.foundation.border
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,16 +32,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.android.recipe.ui.R
 import com.android.recipe.ui.components.AppScaffold
 import com.android.recipe.ui.components.LoadingOverlay
@@ -52,6 +55,7 @@ import com.android.recipe.ui.state.MealsUiState
 import com.android.recipe.ui.theme.size
 import com.android.recipe.ui.theme.spacing
 import com.android.recipe.ui.utils.ObserveAsEvent
+import com.android.recipe.ui.utils.centerExpandEntrance
 import com.android.recipe.ui.viewmodel.MealsViewModel
 
 /**
@@ -147,21 +151,29 @@ private fun MealsScreenContent(
     LoadingOverlay(uiState.isLoading) {
         if (uiState.isLoading.not() && uiState.error == null) {
             Column {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                LazyColumn(
                     modifier = modifier,
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraMedium),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.extraMedium),
                 ) {
-                    items(
+
+                    itemsIndexed(
                         items = uiState.meals,
-                        key = { it.id },
-                    ) { meal ->
-                        MealGridItem(
+                        key = { _, it -> it.id },
+                    ) { index, meal ->
+                        MealCard(
                             title = meal.name,
                             imageUrl = meal.imageUrl,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .centerExpandEntrance(index = index)
+                                .animateItem(
+                                    placementSpec = spring(
+                                        dampingRatio = Spring.DampingRatioLowBouncy,
+                                        stiffness = Spring.StiffnessMediumLow,
+                                        visibilityThreshold = IntOffset.VisibilityThreshold
+                                    )
+                                ),
                             onClick = {
                                 onAction(MealsUiEvent.OnMealClicked(meal.id))
                             },
@@ -181,67 +193,68 @@ private fun MealsScreenContent(
  * @param onClick Callback invoked when the item is clicked.
  * @param modifier The [Modifier] to be applied to this item's layout.
  */
+
 @Composable
-private fun MealGridItem(
+private fun MealCard(
     title: String,
     imageUrl: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier.fillMaxWidth(),
-        contentAlignment = Alignment.TopCenter,
+
+    Card(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(MaterialTheme.size.Card),
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
-        Card(
-            onClick = onClick,
-            shape = MaterialTheme.shapes.extraLarge,
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            ),
-            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .align(Alignment.Center)
-                .padding(top = MaterialTheme.spacing.extraXLarge)
-        ) {
+
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            AsyncImage(
+                model = ImageRequest.Builder(LocalPlatformContext.current)
+                    .data(imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize(),
+            )
+
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = MaterialTheme.spacing.large,
-                        end = MaterialTheme.spacing.large,
-                        top = MaterialTheme.spacing.extraXxLarge,
-                        bottom = MaterialTheme.spacing.large,
-                    )
-                    .height(MaterialTheme.size.SmallCard),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.SemiBold,
+                    .fillMaxSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colorStops = arrayOf(
+                                0f to Color.Transparent,
+                                0.5f to MaterialTheme.colorScheme.scrim.copy(alpha = 0.2f),
+                                1f to MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f),
+                            ),
+                        ),
                     ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-        }
+            )
 
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = title,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(MaterialTheme.size.Card * 1.2f)
-                .clip(CircleShape)
-                .border(
-                    width = 4.dp,
-                    color = MaterialTheme.colorScheme.surface,
-                    shape = CircleShape,
-                )
-        )
+            Text(
+                text = title,
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(
+                        horizontal = MaterialTheme.spacing.medium,
+                        vertical = MaterialTheme.spacing.large,
+                    ),
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
     }
 }

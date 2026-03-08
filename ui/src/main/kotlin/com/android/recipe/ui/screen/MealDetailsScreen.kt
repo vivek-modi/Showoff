@@ -1,5 +1,8 @@
 package com.android.recipe.ui.screen
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.VisibilityThreshold
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.android.recipe.domain.model.IngredientItem
@@ -38,6 +42,7 @@ import com.android.recipe.ui.components.NavigationBackButton
 import com.android.recipe.ui.components.RetryView
 import com.android.recipe.ui.event.MealDetailsUiEvent
 import com.android.recipe.ui.theme.spacing
+import com.android.recipe.ui.utils.staggeredEntrance
 import com.android.recipe.ui.viewmodel.MealDetailsViewModel
 
 /**
@@ -122,18 +127,37 @@ private fun MealDetailsContent(
         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
         contentPadding = PaddingValues(MaterialTheme.spacing.medium),
     ) {
-        item {
+        item(key = "header_image") {
             AsyncImage(
                 model = details.imageUrl,
                 contentDescription = details.name,
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .staggeredEntrance(index = 0)
+                    .animateItem(
+                        placementSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )
+                    ),
                 contentScale = ContentScale.Crop,
             )
         }
 
-        item {
-            Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)) {
+        item(key = "header_info") {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
+                modifier = Modifier
+                    .staggeredEntrance(index = 1)
+                    .animateItem(
+                        placementSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )
+                    )
+            ) {
                 Text(
                     text = details.name,
                     style = MaterialTheme.typography.headlineMedium,
@@ -148,22 +172,59 @@ private fun MealDetailsContent(
             }
         }
 
-        item {
-            SectionTitle(title = "Ingredients")
-        }
-
-        items(details.ingredients) { ingredient ->
-            IngredientRow(ingredient = ingredient)
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            SectionTitle(title = "Instructions")
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            Text(
-                text = details.instructions,
-                style = MaterialTheme.typography.bodyLarge,
+        item(key = "ingredients_title") {
+            SectionTitle(
+                title = "Ingredients",
+                modifier = Modifier
+                    .staggeredEntrance(index = 2)
+                    .animateItem(
+                        placementSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )
+                    )
             )
+        }
+
+        itemsIndexed(
+            items = details.ingredients,
+            key = { index, it -> it.name + it.measure + index }
+        ) { index, ingredient ->
+            IngredientRow(
+                ingredient = ingredient,
+                modifier = Modifier
+                    .staggeredEntrance(index = 3 + index)
+                    .animateItem(
+                        placementSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )
+                    )
+            )
+        }
+
+        item(key = "instructions_section") {
+            Column(
+                modifier = Modifier
+                    .staggeredEntrance(index = 4 + details.ingredients.size)
+                    .animateItem(
+                        placementSpec = spring(
+                            dampingRatio = Spring.DampingRatioLowBouncy,
+                            stiffness = Spring.StiffnessLow,
+                            visibilityThreshold = IntOffset.VisibilityThreshold
+                        )
+                    )
+            ) {
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                SectionTitle(title = "Instructions")
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                Text(
+                    text = details.instructions,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         }
     }
 }

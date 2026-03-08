@@ -28,7 +28,7 @@ object Size {
     val medium = 16.dp
     val large = 24.dp
     val SmallCard = 64.dp
-    val Card = 132.dp
+    val Card = 200.dp
 }
 
 /**
