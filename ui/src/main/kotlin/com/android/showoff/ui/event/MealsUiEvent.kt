@@ -12,9 +12,9 @@ sealed interface MealsUiEvent {
     data object Refresh : MealsUiEvent
 
     /**
-     * Event triggered when a user selects a specific meal from the list.
+     * Event triggered when a user selects a specific meal category from the list.
      *
-     * @param mealId The unique identifier of the clicked meal.
+     * @param category The name of the selected meal category.
      */
-    data class OnMealClicked(val mealId: String) : MealsUiEvent
+    data class OnMealClicked(val category: String) : MealsUiEvent
 }

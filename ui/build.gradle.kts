@@ -38,6 +38,15 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+            "-opt-in=org.koin.core.annotation.KoinExperimentalAPI"
+        )
+    }
+}
+
 dependencies {
     implementation(project(":domain"))
 

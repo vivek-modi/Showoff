@@ -17,7 +17,7 @@ import kotlinx.collections.immutable.persistentListOf
 @Immutable
 data class MealsUiState(
     val isLoading: Boolean = true,
-    val title: String = "",
+    val title: String,
     val meals: PersistentList<RecipeSummary> = persistentListOf(),
     val error: String? = null,
 )

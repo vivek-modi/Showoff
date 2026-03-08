@@ -1,4 +1,4 @@
-@file:OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+@file:OptIn(FlowPreview::class)
 
 package com.android.showoff.ui.viewmodel
 
@@ -10,7 +10,6 @@ import com.android.showoff.ui.error.toUiMessage
 import com.android.showoff.ui.event.CategoriesUiEvent
 import com.android.showoff.ui.state.CategoriesUiState
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
